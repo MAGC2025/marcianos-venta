@@ -51,6 +51,14 @@
             padding: 10px;
         }
 
+        th,
+        td {
+            text-align: center;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+
         tr:hover {
             background: #fff3e0;
         }
@@ -80,126 +88,126 @@
 </head>
 
 <body>
-<div class="container">
-    <h1 id="titulo">Cargando fecha...</h1>
+    <div class="container">
+        <h1 id="titulo">Cargando fecha...</h1>
 
-    <h2>Lista de Marcianos</h2>
-    <table id="tablaMarcianos">
-        <thead>
-            <tr>
-                <th>Marciano</th>
-                <th>Precio</th>
-                <th>Cantidad Inicial</th>
-                <th>Cantidad Restante</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+        <h2>Lista de Marcianos</h2>
+        <table id="tablaMarcianos">
+            <thead>
+                <tr>
+                    <th>Marciano</th>
+                    <th>Precio</th>
+                    <th>Cantidad Inicial</th>
+                    <th>Cantidad Restante</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
 
-    <h2>Clientes</h2>
-    <table id="tablaClientes">
-        <thead>
-            <tr id="encabezadoClientes">
-                <th>Cliente</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+        <h2>Clientes</h2>
+        <table id="tablaClientes">
+            <thead>
+                <tr id="encabezadoClientes">
+                    <th>Cliente</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
 
-    <script>
-        // ================= CONFIGURACIÓN =================
-        const SHEET_ID = "1qprfPyUPduxJQmycbfrDwvnw2ushym9676ioKisuKiw";
-        const API_KEY = "AIzaSyCAYZCXqU1uYoBN-WD64XFzycTHHnahPAU";
+        <script>
+            // ================= CONFIGURACIÓN =================
+            const SHEET_ID = "1qprfPyUPduxJQmycbfrDwvnw2ushym9676ioKisuKiw";
+            const API_KEY = "AIzaSyCAYZCXqU1uYoBN-WD64XFzycTHHnahPAU";
 
-        const hojaMarcianos = "Marcianos";
-        const hojaClientes = "Clientes";
-        const hojaConfig = "Config";
-        // ================================================
+            const hojaMarcianos = "Marcianos";
+            const hojaClientes = "Clientes";
+            const hojaConfig = "Config";
+            // ================================================
 
-        async function leerHoja(nombreHoja) {
-            const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${nombreHoja}!A:Z?key=${API_KEY}`;
-            const res = await fetch(url);
-            const data = await res.json();
-            return data.values;
-        }
-
-        async function cargarTitulo() {
-            const data = await leerHoja(hojaConfig);
-
-            if (data && data.length > 1 && data[1][0]) {
-                document.getElementById("titulo").innerText = data[1][0];
-            } else {
-                document.getElementById("titulo").innerText = "Ventas de Marcianos";
+            async function leerHoja(nombreHoja) {
+                const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${nombreHoja}!A:Z?key=${API_KEY}`;
+                const res = await fetch(url);
+                const data = await res.json();
+                return data.values;
             }
-        }
+
+            async function cargarTitulo() {
+                const data = await leerHoja(hojaConfig);
+
+                if (data && data.length > 1 && data[1][0]) {
+                    document.getElementById("titulo").innerText = data[1][0];
+                } else {
+                    document.getElementById("titulo").innerText = "Ventas de Marcianos";
+                }
+            }
 
 
-        async function cargarMarcianos() {
-            const data = await leerHoja(hojaMarcianos);
-            const tbody = document.querySelector("#tablaMarcianos tbody");
-            tbody.innerHTML = "";
+            async function cargarMarcianos() {
+                const data = await leerHoja(hojaMarcianos);
+                const tbody = document.querySelector("#tablaMarcianos tbody");
+                tbody.innerHTML = "";
 
-            for (let i = 1; i < data.length; i++) {
-                const [nombre, precio, inicial, restante] = data[i];
-                const tr = document.createElement("tr");
+                for (let i = 1; i < data.length; i++) {
+                    const [nombre, precio, inicial, restante] = data[i];
+                    const tr = document.createElement("tr");
 
-                tr.innerHTML = `
+                    tr.innerHTML = `
       <td>${nombre}</td>
       <td>S/ ${precio}</td>
       <td>${inicial}</td>
       <td class="${restante == 0 ? 'agotado' : ''}">${restante == 0 ? 'AGOTADO' : restante}</td>
     `;
-                tbody.appendChild(tr);
-            }
-        }
-
-        async function cargarClientes() {
-            const data = await leerHoja(hojaClientes);
-            const thead = document.getElementById("encabezadoClientes");
-            const tbody = document.querySelector("#tablaClientes tbody");
-
-            thead.innerHTML = "<th>Cliente</th>";
-            tbody.innerHTML = "";
-
-            // Encabezados dinámicos
-            for (let i = 1; i < data[0].length; i++) {
-                const th = document.createElement("th");
-                th.innerText = data[0][i];
-                thead.appendChild(th);
+                    tbody.appendChild(tr);
+                }
             }
 
-            // Filas
-            for (let i = 1; i < data.length; i++) {
-                const tr = document.createElement("tr");
-                data[i].forEach(celda => {
-                    const td = document.createElement("td");
-                    td.innerText = celda;
+            async function cargarClientes() {
+                const data = await leerHoja(hojaClientes);
+                const thead = document.getElementById("encabezadoClientes");
+                const tbody = document.querySelector("#tablaClientes tbody");
 
-                    if (celda) {
-                        const texto = celda.toString().toLowerCase();
+                thead.innerHTML = "<th>Cliente</th>";
+                tbody.innerHTML = "";
 
-                        if (texto === "pendiente") {
-                            td.classList.add("estado-pendiente");
-                        } else if (texto === "entregado") {
-                            td.classList.add("estado-entregado");
+                // Encabezados dinámicos
+                for (let i = 1; i < data[0].length; i++) {
+                    const th = document.createElement("th");
+                    th.innerText = data[0][i];
+                    thead.appendChild(th);
+                }
+
+                // Filas
+                for (let i = 1; i < data.length; i++) {
+                    const tr = document.createElement("tr");
+                    data[i].forEach(celda => {
+                        const td = document.createElement("td");
+                        td.innerText = celda;
+
+                        if (celda) {
+                            const texto = celda.toString().toLowerCase();
+
+                            if (texto === "pendiente") {
+                                td.classList.add("estado-pendiente");
+                            } else if (texto === "entregado") {
+                                td.classList.add("estado-entregado");
+                            }
                         }
-                    }
 
-                    tr.appendChild(td);
-                });
+                        tr.appendChild(td);
+                    });
 
-                tbody.appendChild(tr);
+                    tbody.appendChild(tr);
+                }
             }
-        }
 
-        async function iniciar() {
-            await cargarTitulo();
-            await cargarMarcianos();
-            await cargarClientes();
-        }
+            async function iniciar() {
+                await cargarTitulo();
+                await cargarMarcianos();
+                await cargarClientes();
+            }
 
-        iniciar();
-    </script>
+            iniciar();
+        </script>
     </div>
 </body>
 
