@@ -1,122 +1,155 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8" />
-  <title>Ventas de Marcianos</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    body { font-family: Arial, sans-serif; background:#f7f7f7; padding:20px; }
-    h1 { text-align:center; }
-    table { border-collapse: collapse; width:100%; margin-bottom:30px; background:#fff; }
-    th, td { border:1px solid #ccc; padding:8px; text-align:center; }
-    th { background:#f0f0f0; }
-    .agotado { color:red; font-weight:bold; }
-    button { padding:6px 10px; cursor:pointer; }
-  </style>
+    <meta charset="UTF-8" />
+    <title>Ventas de Marcianos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 30px;
+            background: #fff;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background: #f0f0f0;
+        }
+
+        .agotado {
+            color: red;
+            font-weight: bold;
+        }
+
+        button {
+            padding: 6px 10px;
+            cursor: pointer;
+        }
+    </style>
 </head>
+
 <body>
 
-<h1 id="titulo">Cargando fecha...</h1>
+    <h1 id="titulo">Cargando fecha...</h1>
 
-<h2>Lista de Marcianos</h2>
-<table id="tablaMarcianos">
-  <thead>
-    <tr>
-      <th>Marciano</th>
-      <th>Precio</th>
-      <th>Cantidad Inicial</th>
-      <th>Cantidad Restante</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+    <h2>Lista de Marcianos</h2>
+    <table id="tablaMarcianos">
+        <thead>
+            <tr>
+                <th>Marciano</th>
+                <th>Precio</th>
+                <th>Cantidad Inicial</th>
+                <th>Cantidad Restante</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 
-<h2>Clientes</h2>
-<table id="tablaClientes">
-  <thead>
-    <tr id="encabezadoClientes">
-      <th>Cliente</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+    <h2>Clientes</h2>
+    <table id="tablaClientes">
+        <thead>
+            <tr id="encabezadoClientes">
+                <th>Cliente</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 
-<script>
-// ================= CONFIGURACIÓN =================
-const SHEET_ID = "1qprfPyUPduxJQmycbfrDwvnw2ushym9676ioKisuKiw";
-const API_KEY = "AIzaSyCAYZCXqU1uYoBN-WD64XFzycTHHnahPAU";
+    <script>
+        // ================= CONFIGURACIÓN =================
+        const SHEET_ID = "1qprfPyUPduxJQmycbfrDwvnw2ushym9676ioKisuKiw";
+        const API_KEY = "AIzaSyCAYZCXqU1uYoBN-WD64XFzycTHHnahPAU";
 
-const hojaMarcianos = "Marcianos";
-const hojaClientes = "Clientes";
-const hojaConfig = "Config";
-// ================================================
+        const hojaMarcianos = "Marcianos";
+        const hojaClientes = "Clientes";
+        const hojaConfig = "Config";
+        // ================================================
 
-async function leerHoja(nombreHoja) {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${nombreHoja}?key=${API_KEY}`;
-  const res = await fetch(url);
-  const data = await res.json();
-  return data.values;
-}
+        async function leerHoja(nombreHoja) {
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${nombreHoja}!A:Z?key=${API_KEY}`;
+            const res = await fetch(url);
+            const data = await res.json();
+            return data.values;
+        }
 
-async function cargarTitulo() {
-  const data = await leerHoja(hojaConfig);
-  document.getElementById("titulo").innerText = data[1][0];
-}
+        async function cargarTitulo() {
+            const data = await leerHoja(hojaConfig);
+            document.getElementById("titulo").innerText = data[1][0];
+        }
 
-async function cargarMarcianos() {
-  const data = await leerHoja(hojaMarcianos);
-  const tbody = document.querySelector("#tablaMarcianos tbody");
-  tbody.innerHTML = "";
+        async function cargarMarcianos() {
+            const data = await leerHoja(hojaMarcianos);
+            const tbody = document.querySelector("#tablaMarcianos tbody");
+            tbody.innerHTML = "";
 
-  for (let i = 1; i < data.length; i++) {
-    const [nombre, precio, inicial, restante] = data[i];
-    const tr = document.createElement("tr");
+            for (let i = 1; i < data.length; i++) {
+                const [nombre, precio, inicial, restante] = data[i];
+                const tr = document.createElement("tr");
 
-    tr.innerHTML = `
+                tr.innerHTML = `
       <td>${nombre}</td>
       <td>S/ ${precio}</td>
       <td>${inicial}</td>
       <td class="${restante == 0 ? 'agotado' : ''}">${restante == 0 ? 'AGOTADO' : restante}</td>
     `;
-    tbody.appendChild(tr);
-  }
-}
+                tbody.appendChild(tr);
+            }
+        }
 
-async function cargarClientes() {
-  const data = await leerHoja(hojaClientes);
-  const thead = document.getElementById("encabezadoClientes");
-  const tbody = document.querySelector("#tablaClientes tbody");
+        async function cargarClientes() {
+            const data = await leerHoja(hojaClientes);
+            const thead = document.getElementById("encabezadoClientes");
+            const tbody = document.querySelector("#tablaClientes tbody");
 
-  thead.innerHTML = "<th>Cliente</th>";
-  tbody.innerHTML = "";
+            thead.innerHTML = "<th>Cliente</th>";
+            tbody.innerHTML = "";
 
-  // Encabezados dinámicos
-  for (let i = 1; i < data[0].length; i++) {
-    const th = document.createElement("th");
-    th.innerText = data[0][i];
-    thead.appendChild(th);
-  }
+            // Encabezados dinámicos
+            for (let i = 1; i < data[0].length; i++) {
+                const th = document.createElement("th");
+                th.innerText = data[0][i];
+                thead.appendChild(th);
+            }
 
-  // Filas
-  for (let i = 1; i < data.length; i++) {
-    const tr = document.createElement("tr");
-    data[i].forEach(celda => {
-      const td = document.createElement("td");
-      td.innerText = celda;
-      tr.appendChild(td);
-    });
-    tbody.appendChild(tr);
-  }
-}
+            // Filas
+            for (let i = 1; i < data.length; i++) {
+                const tr = document.createElement("tr");
+                data[i].forEach(celda => {
+                    const td = document.createElement("td");
+                    td.innerText = celda;
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+            }
+        }
 
-async function iniciar() {
-  await cargarTitulo();
-  await cargarMarcianos();
-  await cargarClientes();
-}
+        async function iniciar() {
+            await cargarTitulo();
+            await cargarMarcianos();
+            await cargarClientes();
+        }
 
-iniciar();
-</script>
+        iniciar();
+    </script>
 
 </body>
+
 </html>
