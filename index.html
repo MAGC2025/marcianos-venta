@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>Ricos Marcianos</title>
+    <title>Ventas de Marcianos</title>
     <link rel="icon" type="image/png" href="logo.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
@@ -96,9 +96,8 @@
             <thead>
                 <tr>
                     <th>Marciano</th>
-                    <th>Precio</th>
-                    <th>Cantidad Inicial</th>
-                    <th>Cantidad Restante</th>
+                    <th>Precio</th> 
+                    <th>Disponible</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -148,14 +147,13 @@
                 tbody.innerHTML = "";
 
                 for (let i = 1; i < data.length; i++) {
-                    const [nombre, precio, inicial, restante] = data[i];
+                    const [nombre, precio, inicial, Disponible] = data[i];
                     const tr = document.createElement("tr");
 
                     tr.innerHTML = `
       <td>${nombre}</td>
       <td>S/ ${precio}</td>
-      <td>${inicial}</td>
-      <td class="${restante == 0 ? 'agotado' : ''}">${restante == 0 ? 'AGOTADO' : restante}</td>
+      <td class="${Disponible == 0 ? 'agotado' : ''}">${Disponible == 0 ? 'AGOTADO' : Disponible}</td>
     `;
                     tbody.appendChild(tr);
                 }
@@ -213,4 +211,3 @@
 
 
 </html>
-
