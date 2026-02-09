@@ -92,7 +92,14 @@
 
         async function cargarTitulo() {
             const data = await leerHoja(hojaConfig);
-            document.getElementById("titulo").innerText = data[1][0];
+            async function cargarTitulo() {
+                const data = await leerHoja(hojaConfig);
+                if (data && data.length > 1) {
+                    document.getElementById("titulo").innerText = data[1][0];
+                } else {
+                    document.getElementById("titulo").innerText = "Ventas de Marcianos";
+                }
+            }
         }
 
         async function cargarMarcianos() {
