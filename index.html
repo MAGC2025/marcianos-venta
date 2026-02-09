@@ -43,6 +43,16 @@
             padding: 6px 10px;
             cursor: pointer;
         }
+
+        .estado-pendiente {
+            color: red;
+            font-weight: bold;
+        }
+
+        .estado-entregado {
+            color: green;
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -92,15 +102,14 @@
 
         async function cargarTitulo() {
             const data = await leerHoja(hojaConfig);
-            async function cargarTitulo() {
-                const data = await leerHoja(hojaConfig);
-                if (data && data.length > 1) {
-                    document.getElementById("titulo").innerText = data[1][0];
-                } else {
-                    document.getElementById("titulo").innerText = "Ventas de Marcianos";
-                }
+
+            if (data && data.length > 1 && data[1][0]) {
+                document.getElementById("titulo").innerText = data[1][0];
+            } else {
+                document.getElementById("titulo").innerText = "Ventas de Marcianos";
             }
         }
+
 
         async function cargarMarcianos() {
             const data = await leerHoja(hojaMarcianos);
@@ -142,8 +151,20 @@
                 data[i].forEach(celda => {
                     const td = document.createElement("td");
                     td.innerText = celda;
+
+                    if (celda) {
+                        const texto = celda.toString().toLowerCase();
+
+                        if (texto === "pendiente") {
+                            td.classList.add("estado-pendiente");
+                        } else if (texto === "entregado") {
+                            td.classList.add("estado-entregado");
+                        }
+                    }
+
                     tr.appendChild(td);
                 });
+
                 tbody.appendChild(tr);
             }
         }
