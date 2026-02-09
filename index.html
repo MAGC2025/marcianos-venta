@@ -89,24 +89,44 @@
 
         .whatsapp-float {
             position: fixed;
-            bottom: 20px;
+            bottom: 80px;
+            /* más arriba para móviles */
             right: 20px;
             background-color: #25D366;
             color: white;
-            font-size: 28px;
+            font-size: 30px;
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            text-align: center;
-            line-height: 60px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.35);
             text-decoration: none;
-            z-index: 1000;
-            transition: transform 0.2s ease;
+            z-index: 9999;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .whatsapp-float:hover {
-            transform: scale(1.1);
+            transform: scale(1.12);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .whatsapp-float i {
+            font-size: 34px;
+        }
+
+        @media (max-width: 768px) {
+            .whatsapp-float {
+                width: 65px;
+                height: 65px;
+                bottom: 90px;
+                right: 16px;
+            }
+
+            .whatsapp-float i {
+                font-size: 36px;
+            }
         }
     </style>
 </head>
@@ -232,9 +252,10 @@
         </script>
     </div>
 
-    <a href="https://wa.me/51918444271" class="whatsapp-float" target="_blank" title="Escríbenos por WhatsApp">
+    <a href="https://wa.me/51918444271" class="whatsapp-float" target="_blank" aria-label="Escríbenos por WhatsApp">
         <i class="fa-brands fa-whatsapp"></i>
     </a>
+
 
 </body>
 
